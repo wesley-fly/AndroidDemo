@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<devices>
+ <!--   <device> --> 
+ <!--        <manufacturer>htc</manufacturer> --> <!-- 设备制造厂商  全部小写中间没有空格-->
+<!-- 	<model>htcones</model> --> <!-- 设备型号 全部小写中间没有空格-->
+	<!-- 	<sdk_leve>-1</sdk_leve> --> 	<!-- 手机对应SDK的版本号  -->
+		<!-- <use_aec>true</use_aec> --> <!-- 该手机是否启用AEC算法  true启用，false禁用-->
+    <!-- </device> --> 
+</devices>

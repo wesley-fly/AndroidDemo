@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 主要用来适配，有的机型AEC，AGCNS  -->
+<devices>
+	<device>
+        <manufacturer>samsung</manufacturer><!-- 设备制造厂商  全部小写 -->
+		<model>gt-i9300</model><!-- 设备型号 全部小写 -->
+		<sdk_leve>16</sdk_leve>	<!-- 手机对应SDK的版本号 -->
+		<open_agc>true</open_agc><!-- 默认是false --> 
+		<open_aec>false</open_aec><!-- 默认是false --> 
+		<open_ns>false</open_ns><!--  默认是false -->
+	</device>
+</devices>

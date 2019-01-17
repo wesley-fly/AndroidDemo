@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 主要用来适配，有的机型需要关闭视频功能  -->
+<devices>
+	<device>
+        <manufacturer>zte</manufacturer><!-- 设备制造厂商  全部小写 -->
+		<model>zte-uv880</model><!-- 设备型号 全部小写 -->
+		<sdk_leve>8</sdk_leve><!-- 手机对应SDK的版本号 --> 
+	</device>
+	<device>
+        <manufacturer>zte</manufacturer><!-- 设备制造厂商  全部小写 -->
+		<model>zte-cn760</model><!-- 设备型号 全部小写 -->
+		<sdk_leve>10</sdk_leve>	<!-- 手机对应SDK的版本号 --> 
+	</device>
+	<device>
+        <manufacturer>huawei</manufacturer><!-- 设备制造厂商  全部小写 -->
+		<model>c8500</model><!-- 设备型号 全部小写 -->
+		<sdk_leve>8</sdk_leve>	<!-- 手机对应SDK的版本号 --> 
+	</device>
+	<device>
+        <manufacturer>htc</manufacturer><!-- 设备制造厂商  全部小写 -->
+		<model>htcvision</model><!-- 设备型号 全部小写 -->
+		<sdk_leve>10</sdk_leve>	<!-- 手机对应SDK的版本号 --> 
+	</device>
+	<device>
+        <manufacturer>huawei</manufacturer><!-- 设备制造厂商  全部小写 -->
+		<model>huaweic8650+</model><!-- 设备型号 全部小写 -->
+		<sdk_leve>10</sdk_leve>	<!-- 手机对应SDK的版本号 --> 
+	</device>
+	<device>
+        <manufacturer>huawei</manufacturer><!-- 设备制造厂商  全部小写 -->
+		<model>u8812d</model><!-- 设备型号 全部小写 -->
+		<sdk_leve>10</sdk_leve>	<!-- 手机对应SDK的版本号 --> 
+	</device>
+</devices>
