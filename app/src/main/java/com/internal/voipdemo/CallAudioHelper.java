@@ -2,7 +2,6 @@ package com.internal.voipdemo;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.RingtoneManager;
 import android.net.Uri;
 
 import java.io.IOException;
@@ -16,9 +15,12 @@ public class CallAudioHelper
         m_mediaPlayer = new MediaPlayer();
     }
     public static void startAlarm() {
+        m_mediaPlayer.reset();
+        Uri alert = Uri.parse("android.resource://com.internal.voipdemo/" + R.raw.n_dingding);
         try {
-            m_mediaPlayer.reset();
-            m_mediaPlayer.setDataSource(MyApplication.context, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
+//            m_mediaPlayer.reset();
+//            m_mediaPlayer.setDataSource(MyApplication.context, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
+            m_mediaPlayer.setDataSource(MyApplication.context, alert);
             m_mediaPlayer.setLooping(true);
             m_mediaPlayer.prepare();
             m_mediaPlayer.start();
@@ -40,7 +42,6 @@ public class CallAudioHelper
         m_mediaPlayer.reset();
         Uri alert = Uri.parse("android.resource://com.internal.voipdemo/" + R.raw.ringback_dialing);
         try {
-            m_mediaPlayer = new MediaPlayer();
             m_mediaPlayer.setDataSource(MyApplication.context, alert);
             m_mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
             m_mediaPlayer.setLooping(true);

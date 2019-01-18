@@ -1,6 +1,5 @@
 package com.internal.voipdemo;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -120,16 +119,38 @@ public class BaseActivity extends AppCompatActivity {
     }
     private AppSimpleListener appSimpleListener = new AppSimpleListener()
     {
+        @Override
         public void onSystemEvent(int eventType) {
-            if(SysEventType.SYS_EVENT_KICKOUT == eventType){
-                finish();
-                Intent intent  = new Intent(getApplicationContext(),LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getApplicationContext().startActivity(intent);
-                Message msg = new Message();
-                msg.what = SysEventType.SYS_EVENT_KICKOUT;
-                mHandler.sendMessage(msg);
-                SharedPerfUtils.clear(getApplicationContext());
+            switch (eventType)
+            {
+                case SysEventType.SYS_EVENT_KICKOUT:
+                {
+                    finish();
+                    Intent intent  = new Intent(getApplicationContext(),LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getApplicationContext().startActivity(intent);
+                    Message msg = new Message();
+                    msg.what = SysEventType.SYS_EVENT_KICKOUT;
+                    mHandler.sendMessage(msg);
+                    SharedPerfUtils.clear(getApplicationContext());
+                }
+                break;
+                case SysEventType.SYS_EVENT_DISCONNECT:
+                {
+                    Message msg = new Message();
+                    msg.what = SysEventType.SYS_EVENT_DISCONNECT;
+                    mHandler.sendMessage(msg);
+                }
+                break;
+                case SysEventType.SYS_EVENT_RECONNECT:
+                {
+                    Message msg = new Message();
+                    msg.what = SysEventType.SYS_EVENT_RECONNECT;
+                    mHandler.sendMessage(msg);
+                }
+                break;
+                default:
+                    break;
             }
         }
     };
@@ -139,7 +160,16 @@ public class BaseActivity extends AppCompatActivity {
             switch(msg.what)
             {
                 case SysEventType.SYS_EVENT_KICKOUT:
-                    Toast.makeText(getApplicationContext(), "KICKOUT", Toast.LENGTH_LONG).show();
+                    showProgressDialog("此用户已在其他设备登陆,自动退出");
+//                    Toast.makeText(getApplicationContext(), "此用户已在其他设备登陆,自动退出", Toast.LENGTH_LONG).show();
+                    break;
+                case SysEventType.SYS_EVENT_DISCONNECT:
+                    showProgressDialog("网络不可用,请检查网络链接");
+//                    Toast.makeText(getApplicationContext(), "网络不可用,请检查网络链接", Toast.LENGTH_LONG).show();
+                    break;
+                case SysEventType.SYS_EVENT_RECONNECT:
+                    showProgressDialog("网络链接已重新链接");
+//                    Toast.makeText(getApplicationContext(), "网络链接已重新链接", Toast.LENGTH_LONG).show();
                     break;
                 default:
                     break;

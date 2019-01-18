@@ -1,9 +1,6 @@
 package com.internal.voipdemo;
 
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -29,6 +26,7 @@ public class CallActivity extends BaseActivity
 
     private AppSimpleListener appSimpleListener = new AppSimpleListener()
     {
+        @Override
         public void onReceiveCallEvent(String callId, long timestamp,String callerId, String callerName, int media, int callType)
         {
             Log.e(TAG, "onReceiveCallEvent callId : " + callId + ", timestamp : " + timestamp +", callerId : " + callerId + " ,callerName : " + callerName + " callType : " + callType);
@@ -58,7 +56,7 @@ public class CallActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_call);
+        setContentView(R.layout.activity_list_common);
 
         ((MyApplication) getApplication()).registerEventListener(appSimpleListener);
 

@@ -1,7 +1,6 @@
 package com.internal.voipdemo;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -48,7 +47,6 @@ public class IncomingCallActivity extends BaseActivity
                 default:
                     break;
             }
-
         }
 
         @Override
@@ -106,8 +104,6 @@ public class IncomingCallActivity extends BaseActivity
                 if (!isFinishing()) {
                     startActivity(intent);
                     finish();
-                } else {
-                    Log.i(TAG, "maybe receive RCL and so on, not to start again...");
                 }
             }
         });

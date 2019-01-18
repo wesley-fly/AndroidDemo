@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.internal.voipmedia.CallState;
 import com.internal.voipmedia.RecCallType;
@@ -54,21 +55,23 @@ public class TalkingActivity extends BaseActivity {
         public void onCallStateEvent(String callId, long timestamp,int state, int reason) {
             Log.d(TAG, "onCallStateEvent callId: " + callId + ",timestamp: " + timestamp + ",state: " + state + ",reason: " + reason);
 
-            if (!callId.equals(m_callId))
+            if (!callId.equals(m_callId)) {
+                Log.e(TAG,"错误的通知事件,CALL ID不正确!");
                 return;
+            }
 
             Message msg = handler.obtainMessage();
             switch (state) {
                 case CallState.CALL_STATE_HANGUP:
                     msg.obj = "通话结束";
                     CallAudioHelper.stopRingback();
-                    speaker = 0;
 
                     if (reason == 2 || reason == 3)// 被叫忙
                     {
-                        Log.d(TAG, "onCallStateEvent callId: " + callId + " 对方忙... ");
+                        Toast.makeText(TalkingActivity.this,"对方正在通话中",Toast.LENGTH_SHORT).show();
                     }
 
+                    VoIPMediaAPI.getInstance().setAudioOutput(0);
                     MyApplication.isTalking = false;
                     finish();
                     break;
@@ -90,7 +93,6 @@ public class TalkingActivity extends BaseActivity {
                 default:
                     break;
             }
-            Log.i(TAG, "onCallStateEvent " + msg.obj);
             handler.sendMessage(msg);
         }
     };
@@ -115,6 +117,7 @@ public class TalkingActivity extends BaseActivity {
         final Button speakerButton = (Button) findViewById(R.id.btn_speaker);
 
         speakerButton.setText("扬声器");
+        VoIPMediaAPI.getInstance().setAudioOutput(0);
 
         muteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,7 +150,6 @@ public class TalkingActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 CallAudioHelper.stopRingback();
-                speaker = 0;
 
                 new Thread(new Runnable() {
                     public void run() {
