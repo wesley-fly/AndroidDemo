@@ -2,41 +2,54 @@ package com.internal.voipdemo;
 
 public class MsgEntity
 {
-    private String msgId;
+    private String msgId = "";
 
-    private String msgFromId;
+    private String msgAccount;
 
-    private String msgDstId;
+    private String msgText;
 
-    private int msgStatus = -1;
+    private int msgSendState;
+
+    private int msgPeerState;
 
     public void setMsgId(String msgId)
     {
         this.msgId = msgId;
     }
-
-    public void setMsgFromId(String msgFromId)
+    public void setMsgAccount(String msgAccount)
     {
-        this.msgFromId = msgFromId;
+        this.msgAccount = msgAccount;
     }
-
-    public void setMsgStatus(int msgStatus)
+    public void setMsgText(String msgText)
     {
-        this.msgStatus = msgStatus;
+        this.msgText = msgText;
     }
-
+    public void setMsgSendState(int msgSendState)
+    {
+        this.msgSendState = msgSendState;
+    }
+    public void setMsgPeerState(int msgPeerState)
+    {
+        this.msgPeerState = msgPeerState;
+    }
     public String getMsgId()
     {
         return msgId;
     }
-
-    public String getMsgFromId()
+    public String getMsgAccount()
     {
-        return msgFromId;
+        return msgAccount;
     }
-
-    public int getMsgStatus()
+    public String getMsgText()
     {
-        return msgStatus;
+        return msgText;
+    }
+    public int getMsgSendState()
+    {
+        return msgSendState;
+    }
+    public int getMsgPeerState()
+    {
+        return msgPeerState;
     }
 }

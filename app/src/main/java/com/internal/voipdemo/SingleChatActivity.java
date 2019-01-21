@@ -7,11 +7,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.internal.voipmedia.MessageStatus;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -36,7 +39,7 @@ public class SingleChatActivity extends ListActivity
     public TextView mTvDstAccountId;
 
     private String mDstAccountId;
-
+    private String mSrcAccountId;
     String m_sendMsg;
     String m_sendFilePath;
     protected boolean m_isFileSend;
@@ -46,7 +49,7 @@ public class SingleChatActivity extends ListActivity
     CopyOnWriteArrayList<MsgEntity> msgList;
     MsgAdapter m_msgAdapter;
 
-    Handler mHander = new Handler()
+    Handler mHandler = new Handler()
     {
         @Override
         public void handleMessage(Message msg)
@@ -59,10 +62,14 @@ public class SingleChatActivity extends ListActivity
                     Bundle bundle = msg.getData();
                     String msgId = bundle.getString("msgId");
                     int sendStatus = bundle.getInt("resultCode", -1);
+                    long timestamp = bundle.getLong("timestamp", -1);
+
                     MsgEntity msgSend = new MsgEntity();
                     msgSend.setMsgId(msgId);
-                    msgSend.setMsgFromId(sendMsg);
-                    msgSend.setMsgStatus(sendStatus);
+                    msgSend.setMsgAccount(mSrcAccountId);
+                    msgSend.setMsgText(sendMsg);
+                    msgSend.setMsgSendState(sendStatus);
+                    msgSend.setMsgPeerState(0);
 
                     msgList.add(msgSend);
                     m_msgAdapter.setDate(msgList);
@@ -70,14 +77,130 @@ public class SingleChatActivity extends ListActivity
                 break;
                 case TextChatActor.TEXT_RECV_MSG:
                 {
-                    String recvMsg = (String) msg.obj;
-                    MsgEntity msgEntity = new MsgEntity();
-                    msgEntity.setMsgFromId(recvMsg);
-                    msgList.add(msgEntity);
+                    String recMsg = (String) msg.obj;
+                    Bundle bundle = msg.getData();
+
+                    String msgId = bundle.getString("msgId");
+                    int sendStatus = bundle.getInt("resultCode", -1);
+                    String senderId = bundle.getString("senderId");
+
+                    MsgEntity msgRec = new MsgEntity();
+                    msgRec.setMsgId(msgId);
+                    msgRec.setMsgAccount(senderId);
+                    msgRec.setMsgText(recMsg);
+                    msgRec.setMsgSendState(sendStatus);
+                    msgRec.setMsgPeerState(MessageStatus.MSG_STATUS_READED);
+
+                    msgList.add(msgRec);
                     m_msgAdapter.setDate(msgList);
                 }
                 break;
+                case TextChatActor.REC_OF_MSG:
+                {
+                    String statusMsgId = (String) msg.obj;
+                    Log.e(TAG, "msgList.size(): " + msgList.size());
+                    Log.e(TAG, "statusMsgId: " + statusMsgId);
+                    for (int i = 0; i < msgList.size(); i++) {
+                        if (msgList.get(i).getMsgId().equalsIgnoreCase(statusMsgId)) {
+                            MsgEntity msgStatus = new MsgEntity();
+
+                            msgStatus.setMsgId(msgList.get(i).getMsgId());
+                            msgStatus.setMsgAccount(msgList.get(i).getMsgAccount());
+                            msgStatus.setMsgText(msgList.get(i).getMsgText());
+                            msgStatus.setMsgSendState(msgList.get(i).getMsgSendState());
+                            msgStatus.setMsgPeerState(MessageStatus.MSG_STATUS_RECEIVED);
+                            msgList.remove(i);
+                            msgList.add(i, msgStatus);
+                            m_msgAdapter.setDate(msgList);
+                            break;
+                        }
+                    }
+                }
+                break;
+                case TextChatActor.READ_OF_MSG:
+                {
+                    String statusMsgId = (String) msg.obj;
+
+                    for (int i = 0; i < msgList.size(); i++) {
+                        if (msgList.get(i).getMsgId().equalsIgnoreCase(statusMsgId)) {
+                            MsgEntity msgStatus = new MsgEntity();
+
+                            msgStatus.setMsgId(msgList.get(i).getMsgId());
+                            msgStatus.setMsgAccount(msgList.get(i).getMsgAccount());
+                            msgStatus.setMsgText(msgList.get(i).getMsgText());
+                            msgStatus.setMsgSendState(msgList.get(i).getMsgSendState());
+                            msgStatus.setMsgPeerState(MessageStatus.MSG_STATUS_READED);
+                            msgList.remove(i);
+                            msgList.add(i, msgStatus);
+                            m_msgAdapter.setDate(msgList);
+                            break;
+                        }
+                    }
+                }
+                break;
+                case FileChatActor.FILE_SEND_MSG:
+                {
+                    String filePath = (String) msg.obj;
+                    Bundle bundle = msg.getData();
+                    String msgId = bundle.getString("msgId");
+                    int sendStatus = bundle.getInt("resultCode", -1);
+                    String senderId = bundle.getString("senderId");
+
+                    MsgEntity msgFile = new MsgEntity();
+                    msgFile.setMsgId(msgId);
+                    msgFile.setMsgAccount(mSrcAccountId);
+                    msgFile.setMsgText(filePath );
+                    msgFile.setMsgSendState(sendStatus);
+                    msgFile.setMsgPeerState(0);
+
+                    msgList.add(msgFile);
+                    m_msgAdapter.setDate(msgList);
+                }
+                break;
+                case FileChatActor.FILE_RECV_MSG:
+                {
+                    String fileName = (String) msg.obj;
+                    Bundle bundle = msg.getData();
+                    String text = bundle.getString("addContent");
+
+                    MsgEntity msgFile = new MsgEntity();
+
+                    String msgId = bundle.getString("msgId");
+                    int sendStatus = bundle.getInt("resultCode", -1);
+                    String senderId = bundle.getString("senderId");
+                    msgFile.setMsgId(msgId);
+                    msgFile.setMsgAccount(senderId);
+                    msgFile.setMsgText(fileName + "\n" + text);
+                    msgFile.setMsgSendState(sendStatus);
+                    msgFile.setMsgPeerState(MessageStatus.MSG_STATUS_READED);
+
+                    msgList.add(msgFile);
+                    m_msgAdapter.setDate(msgList);
+                }
+                break;
+                case FileChatActor.FILE_UPLOAD_MSG:
+                {
+                    int upProgress = msg.arg1;
+                    m_uploadBar.setProgress(upProgress);
+                    if (upProgress == 100) {
+                        m_uploadBar.setProgress(0);
+                        Log.e(TAG, "附件上传进度: " + upProgress);
+                    }
+                }
+                break;
+                case FileChatActor.FILE_DOWNLOAD_MSG:
+                {
+                    int downProgress = msg.arg1;
+                    m_downloadBar.setProgress(downProgress);
+                    if (downProgress == 100) {
+                        m_downloadBar.setProgress(0);
+                        Log.e(TAG, "附件下载进度: " + downProgress);
+                    }
+                }
+                break;
             }
+
+            m_msgAdapter.notifyDataSetChanged();
         }
     };
     @Override
@@ -93,7 +216,11 @@ public class SingleChatActivity extends ListActivity
         m_fileButton = (Button) findViewById(R.id.btn_send_file);
 
         mTvAccountId = (TextView) findViewById(R.id.tv_account);
-        mTvAccountId.setText(SharedPerfUtils.getAccountId(this));
+        mSrcAccountId = SharedPerfUtils.getAccountId(this);
+        mTvAccountId.setText(mSrcAccountId);
+
+        mTextChatActor = new TextChatActor(mHandler);
+        mFileChatActor = new FileChatActor(mHandler);
 
         mTvDstAccountId = (TextView) findViewById(R.id.tv_dst_id);
         Intent intent = getIntent();

@@ -121,12 +121,15 @@ public class MyApplication extends Application implements EventListener {
     @Override
     public void onUploadMessageAttachmentProgressEvent(String messageId, int uploadProgress)
     {
-
+//        Log.e(TAG, "onUploadMessageAttachmentProgressEvent messageId = " + messageId + ", uploadProgress = " + uploadProgress);
+        for (EventListener listener : listeners) {
+            listener.onUploadMessageAttachmentProgressEvent(messageId, uploadProgress);
+        }
     }
     @Override
     public void onDownloadMessageAttachmentProgressEvent(String messageId, int downloadProgress)
     {
-        Log.e(TAG, "onDownloadMessageAttachmentProgressEvent messageId = " + messageId + ", downloadProgress = " + downloadProgress);
+//        Log.e(TAG, "onDownloadMessageAttachmentProgressEvent messageId = " + messageId + ", downloadProgress = " + downloadProgress);
         for (EventListener listener : listeners) {
             listener.onDownloadMessageAttachmentProgressEvent(messageId,downloadProgress);
         }

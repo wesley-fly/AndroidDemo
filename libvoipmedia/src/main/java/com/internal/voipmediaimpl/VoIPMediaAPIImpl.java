@@ -120,7 +120,7 @@ public class VoIPMediaAPIImpl extends VoIPMediaAPI implements StatusJniListener
         if(mt.isFile())
         {
             File file = new File(filePath);
-            if(file.exists()||!file.isFile()||!file.canRead())
+            if(!file.exists() || !file.isFile() || !file.canRead())
             {
                 Log.e(TAG,"检查文件不可被操作!");
                 return "";
@@ -215,7 +215,6 @@ public class VoIPMediaAPIImpl extends VoIPMediaAPI implements StatusJniListener
     @Override
     public int setAudioOutput(int device) {
         if (0 != device && 1 != device) {
-            Log.w(TAG, "setAudioOutput paramert error device = " + device);
             return ErrorCode.PARAM_ERROR;
         }
 
@@ -262,7 +261,6 @@ public class VoIPMediaAPIImpl extends VoIPMediaAPI implements StatusJniListener
     public void onReceiveMessageEvent(String jsonString)
     {
         JSONObject jsonObject;
-        Log.e(TAG, "Impl->onReceiveMessageEvent");
         try {
             jsonObject = new JSONObject(jsonString);
             int type = jsonObject.optInt("type");
@@ -283,7 +281,6 @@ public class VoIPMediaAPIImpl extends VoIPMediaAPI implements StatusJniListener
 
                     if (sessionType == 0) {
                         singleChatMsg = new MessageOneToOne(MimeType.buildMimeType(mimeType), srcId, messageID, textContent, createTime, filePath, mediaInfo);
-                        Log.e(TAG, "Impl->MMS->singleChatMsg->onReceiveMessageEvent");
                         m_voipEventListener.onReceiveMessageEvent(MessageObjectType.MSG_OBJECT_TYPE_MMS, singleChatMsg);
                     }
                 }
@@ -297,12 +294,12 @@ public class VoIPMediaAPIImpl extends VoIPMediaAPI implements StatusJniListener
                     if (MessageStatus.MSG_STATUS_RECEIVED == messageStatus) {
                         MessageOfRec msgStateRec = new MessageOfRec((long) createTime);
                         msgStateRec.setMessageId(messageID);
-                        Log.e(TAG, "Impl->STATUS->singleChatMsg->onReceiveMessageEvent Peer Received");
+//                        Log.e(TAG, "Impl->STATUS->singleChatMsg->onReceiveMessageEvent Peer Received");
                         m_voipEventListener.onReceiveMessageEvent(MessageObjectType.MSG_OBJECT_TYPE_STATUS, msgStateRec);
                     } else if (MessageStatus.MSG_STATUS_READED == messageStatus) {
                         MessageOfRead msgStateRead = new MessageOfRead((long) createTime);
                         msgStateRead.setMessageId(messageID);
-                        Log.e(TAG, "Impl->STATUS->singleChatMsg->onReceiveMessageEvent Peer Readed");
+//                        Log.e(TAG, "Impl->STATUS->singleChatMsg->onReceiveMessageEvent Peer Readed");
                         m_voipEventListener.onReceiveMessageEvent(MessageObjectType.MSG_OBJECT_TYPE_STATUS, msgStateRead);
                     }
                 }
