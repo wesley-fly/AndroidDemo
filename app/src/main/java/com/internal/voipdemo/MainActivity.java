@@ -13,7 +13,8 @@ import com.internal.voipmedia.VoIPMediaAPI;
 public class MainActivity extends BaseActivity {
     private final int CALL = 0;
     private final int CHAT = 1;
-    private String[] items = { "呼叫", "聊天"};
+    private final int PASS_CHANGE = 2;
+    private String[] items = { "呼叫", "聊天", "修改用户登录密码"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,9 @@ public class MainActivity extends BaseActivity {
                         break;
                     case CHAT:
                         startActivity(new Intent(view.getContext(),ChatActivity.class));
+                        break;
+                    case PASS_CHANGE:
+                        startActivity(new Intent(view.getContext(),ChangePassActivity.class));
                         break;
 
                     default:

@@ -36,7 +36,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SingleChatActivity"></activity>
+        <activity android:name=".ChangePassActivity"></activity>
+        <activity android:name=".SingleChatActivity" />
         <activity android:name=".ChatActivity" />
         <activity
             android:name=".StartupActivity"
