@@ -20,7 +20,6 @@ public class BaseDevice {
 		this.deviceModel = model;
 	}
 
-
 	public String getDeviceManufacturer() {
 		return deviceManufacturer;
 	}

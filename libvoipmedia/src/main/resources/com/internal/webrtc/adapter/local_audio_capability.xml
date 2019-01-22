@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 主要用来适配，有的机型AEC，AGCNS  -->
 <devices>
-	<device>
-        <manufacturer>samsung</manufacturer><!-- 设备制造厂商  全部小写 -->
-		<model>gt-i9300</model><!-- 设备型号 全部小写 -->
-		<sdk_leve>16</sdk_leve>	<!-- 手机对应SDK的版本号 -->
-		<agc>true</agc><!-- 默认是true --> 
-		<aec>false</aec><!-- 默认是true --> 
-		<ns>false</ns><!--  默认是true -->
-		<force_java_audio>true</force_java_audio><!-- 是否强制使用java采集 默认是false --> 
-	</device>
-	
-	<device>
-        <manufacturer>nokia</manufacturer><!-- 设备制造厂商  全部小写 -->
-		<model>nokia_x</model><!-- 设备型号 全部小写 -->
-		<sdk_leve>16</sdk_leve>	<!-- 手机对应SDK的版本号 -->
-		<agc>true</agc><!-- 默认是true --> 
-		<aec>true</aec><!-- 默认是true --> 
-		<ns>true</ns><!--  默认是true -->
-		<force_java_audio>true</force_java_audio><!-- 是否强制使用java采集 默认是false --> 
-	</device>
+	<!--<device>-->
+        <!--<manufacturer>samsung</manufacturer>&lt;!&ndash; 设备制造厂商  全部小写 &ndash;&gt;-->
+		<!--<model>gt-i9300</model>&lt;!&ndash; 设备型号 全部小写 &ndash;&gt;-->
+		<!--<sdk_leve>16</sdk_leve>	&lt;!&ndash; 手机对应SDK的版本号 &ndash;&gt;-->
+		<!--<agc>true</agc>&lt;!&ndash; 默认是true &ndash;&gt; -->
+		<!--<aec>false</aec>&lt;!&ndash; 默认是true &ndash;&gt; -->
+		<!--<ns>false</ns>&lt;!&ndash;  默认是true &ndash;&gt;-->
+		<!--<force_java_audio>true</force_java_audio>&lt;!&ndash; 是否强制使用java采集 默认是false &ndash;&gt; -->
+	<!--</device>-->
+	<!---->
+	<!--<device>-->
+        <!--<manufacturer>nokia</manufacturer>&lt;!&ndash; 设备制造厂商  全部小写 &ndash;&gt;-->
+		<!--<model>nokia_x</model>&lt;!&ndash; 设备型号 全部小写 &ndash;&gt;-->
+		<!--<sdk_leve>16</sdk_leve>	&lt;!&ndash; 手机对应SDK的版本号 &ndash;&gt;-->
+		<!--<agc>true</agc>&lt;!&ndash; 默认是true &ndash;&gt; -->
+		<!--<aec>true</aec>&lt;!&ndash; 默认是true &ndash;&gt; -->
+		<!--<ns>true</ns>&lt;!&ndash;  默认是true &ndash;&gt;-->
+		<!--<force_java_audio>true</force_java_audio>&lt;!&ndash; 是否强制使用java采集 默认是false &ndash;&gt; -->
+	<!--</device>-->
 </devices>
