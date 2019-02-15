@@ -161,15 +161,12 @@ public class BaseActivity extends AppCompatActivity {
             {
                 case SysEventType.SYS_EVENT_KICKOUT:
                     showProgressDialog("此用户已在其他设备登陆,自动退出");
-//                    Toast.makeText(getApplicationContext(), "此用户已在其他设备登陆,自动退出", Toast.LENGTH_LONG).show();
                     break;
                 case SysEventType.SYS_EVENT_DISCONNECT:
                     showProgressDialog("网络不可用,请检查网络链接");
-//                    Toast.makeText(getApplicationContext(), "网络不可用,请检查网络链接", Toast.LENGTH_LONG).show();
                     break;
                 case SysEventType.SYS_EVENT_RECONNECT:
                     showProgressDialog("网络链接已重新链接");
-//                    Toast.makeText(getApplicationContext(), "网络链接已重新链接", Toast.LENGTH_LONG).show();
                     break;
                 default:
                     break;

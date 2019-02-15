@@ -501,7 +501,6 @@ public class VideoCaptureAndroid extends OrientationEventListener implements Pre
 
             previewBufferLock.unlock();
         }
-
     }
 
     // Sets the rotation of the preview render window.
