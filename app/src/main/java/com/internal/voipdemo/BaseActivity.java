@@ -24,7 +24,7 @@ public class BaseActivity extends AppCompatActivity {
     protected final int LOGIN_ACCOUNT_PASS_LEN_ERROR = 2;
     protected ProgressDialog progressDialog;
 
-    protected void AppLoginAppAccount(final String hostAddr, final String phoneNumber, final String passWord, final Handler handler)
+    protected void AppLoginAppAccount(final String hostServer, final String email, final String passWord, final Handler handler)
     {
         new Thread(new Runnable() {
             @Override
@@ -37,26 +37,27 @@ public class BaseActivity extends AppCompatActivity {
                     return;
                 }
 
-                VoIPMediaAPI.getInstance().setSystemParams(ParametersName.VOIP_CS_SERVER,hostAddr);
-                Log.e(TAG, "首先检查此手机号码的注册状态,手机号:" + phoneNumber );
-                int status = VoIPMediaAPI.getInstance().checkAccount(phoneNumber);
+                VoIPMediaAPI.getInstance().setSystemParams(ParametersName.VOIP_CS_SERVER,hostServer);
+                Log.e(TAG, "首先检查此手机号码的注册状态,E-mail:" + email );
+                int status = VoIPMediaAPI.getInstance().checkAccountByMail(email);
+
                 switch (status)
                 {
                     case AccountStatus.ACCOUNT_USER_NEW:
                     {
-                        Log.e(TAG, "新用户,进行注册操作,注册手机号:" + phoneNumber + ",密码:" + passWord);
+                        Log.e(TAG, "新用户,进行注册操作,注册E-mail:" + email + ",密码:" + passWord);
 
-                        if(VoIPMediaAPI.getInstance().registerAccount(phoneNumber, "86", passWord) == 0)
+                        if(VoIPMediaAPI.getInstance().registerAccountByMail(email, passWord) == 0)
                         {
                             Log.e(TAG, "新用户注册成功,接着登陆...");
-                            AccountId = VoIPMediaAPI.getInstance().loginAccount(phoneNumber, passWord);
+                            AccountId = VoIPMediaAPI.getInstance().loginAccountByMail(email, passWord);
                         }
                     }
                     break;
                     case AccountStatus.ACCOUNT_USER_NORMAL:
                     {
-                        Log.e(TAG, "已注册用户,进行登陆,登陆手机号:" + phoneNumber + ",密码:" + passWord);
-                        AccountId = VoIPMediaAPI.getInstance().loginAccount(phoneNumber, passWord);
+                        Log.e(TAG, "已注册用户,进行登陆,登陆E-mail:" + email + ",密码:" + passWord);
+                        AccountId = VoIPMediaAPI.getInstance().loginAccountByMail(email, passWord);
                     }
                     break;
                     case AccountStatus.ACCOUNT_USER_NO_PASS:
@@ -74,10 +75,10 @@ public class BaseActivity extends AppCompatActivity {
                 if(AccountId.length() == 8)
                 {
                     Log.e(TAG, "用户登陆成功,存储至本地APP数据");
-                    SharedPerfUtils.setServerHost(BaseActivity.this, hostAddr);
+                    SharedPerfUtils.setServerHost(BaseActivity.this, hostServer);
                     SharedPerfUtils.setAccountId(BaseActivity.this, AccountId);
                     SharedPerfUtils.setPassword(BaseActivity.this, passWord);
-                    SharedPerfUtils.setPhoneNumber(BaseActivity.this, phoneNumber);
+                    SharedPerfUtils.setEmail(BaseActivity.this, email);
                     handler.sendEmptyMessage(LOGIN_ACCOUNT_SUCCESS);
                 }
                 else

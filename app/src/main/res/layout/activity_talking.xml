@@ -38,7 +38,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="保持" />
+            android:text="保持"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/btn_speaker"

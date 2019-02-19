@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="192.168.4.121"
+        android:text="192.168.6.57"
         android:hint="请输入服务器地址" />
 
     <EditText
@@ -18,7 +18,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="+8613800000000"
-        android:hint="请输入电话号码"/>
+        android:hint="请输入电话号码"
+        android:visibility="gone"/>
+    <EditText
+        android:id="@+id/et_mail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="10000@qq.com"
+        android:hint="请输入E-mail"/>
+
     <EditText
         android:id="@+id/et_password"
         android:layout_width="match_parent"

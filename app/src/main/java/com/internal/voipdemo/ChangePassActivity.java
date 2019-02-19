@@ -1,13 +1,14 @@
 package com.internal.voipdemo;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import com.internal.voipmedia.VoIPMediaAPI;
 
 public class ChangePassActivity extends BaseActivity {
-
+    private static final String TAG = ChangePassActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,19 +27,19 @@ public class ChangePassActivity extends BaseActivity {
                 int passLen = oldPass.length();
                 if(passLen < 6 || passLen > 20)
                 {
-                    showToastMessage("密码长度为6-20位，请重新输入！");
+                    showToastMessage("旧密码长度为6-20位，请重新输入！");
                     return;
                 }
                 passLen = NewPass1.length();
                 if(passLen < 6 || passLen > 20)
                 {
-                    showToastMessage("密码长度为6-20位，请重新输入！");
+                    showToastMessage("新密码1长度为6-20位，请重新输入！");
                     return;
                 }
                 passLen = NewPass2.length();
                 if(passLen < 6 || passLen > 20)
                 {
-                    showToastMessage("密码长度为6-20位，请重新输入！");
+                    showToastMessage("新密码2长度为6-20位，请重新输入！");
                     return;
                 }
 
@@ -47,8 +48,8 @@ public class ChangePassActivity extends BaseActivity {
                     showToastMessage("两次输入新密码不一致,请重新输入!");
                     return;
                 }
-
-                int result = VoIPMediaAPI.getInstance().changeAccountPassword(oldPass, NewPass1);
+                Log.e(TAG, "旧密码:" +oldPass+ ",新密码:" + NewPass1);
+                int result = VoIPMediaAPI.getInstance().changeAccountPasswordByMail(oldPass, NewPass1);
                 if(result == 0)
                 {
                     showToastMessage("修改密码成功,请使用新密码重新登陆");

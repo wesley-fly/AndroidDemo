@@ -24,6 +24,14 @@ public class SharedPerfUtils
         SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
         return preferences.getString("user_phone_number", null);
     }
+    public static void setEmail(Context context,String email) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE).edit();
+        editor.putString("user_email", email).commit();
+    }
+    public static String getEmail(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return preferences.getString("user_email", null);
+    }
     public static void setPassword(Context context,String account) {
         SharedPreferences.Editor editor = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE).edit();
         editor.putString("user_password", account).commit();
