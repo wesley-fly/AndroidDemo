@@ -15,8 +15,8 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
 
         final EditText editTextHost = (EditText)findViewById(R.id.et_server);
-        final EditText editTextPhone = (EditText)findViewById(R.id.et_phone);
         final EditText editTextPassword = (EditText)findViewById(R.id.et_password);
+        final EditText editTextMail = (EditText)findViewById(R.id.et_mail);
 
         final Handler handler = new Handler()
         {
@@ -41,13 +41,13 @@ public class LoginActivity extends BaseActivity {
         findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String hostAddr = editTextHost.getText().toString().trim();
+                String hostServer = editTextHost.getText().toString().trim();
                 String passWord = editTextPassword.getText().toString().trim();
-                String phoneNumber = !TextUtils.isEmpty(editTextPhone.getText().toString().trim()) ? editTextPhone.getText().toString().trim() : "";
+                String email = editTextMail.getText().toString().trim();
 
                 if (!TextUtils.isEmpty(passWord)) {
                     showProgressDialog("登录中...");
-                    AppLoginAppAccount(hostAddr, phoneNumber, passWord,  handler);
+                    AppLoginAppAccount(hostServer, email, passWord,  handler);
                 }
 
             }

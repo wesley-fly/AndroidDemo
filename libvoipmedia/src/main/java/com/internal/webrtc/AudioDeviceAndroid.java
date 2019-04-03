@@ -27,7 +27,9 @@ import android.media.audiofx.AudioEffect.OnEnableStatusChangeListener;
 import android.media.audiofx.AutomaticGainControl;
 import android.media.audiofx.NoiseSuppressor;
 import android.os.Build;
+import android.util.Log;
 
+import com.internal.voipmedia.util.DeviceUtil;
 import com.internal.webrtc.adapter.AudioEffectOperatDevice;
 import com.internal.webrtc.adapter.LocalAudioCapabilityFactory;
 import com.internal.webrtc.adapter.LocalAudioDetector;
@@ -70,7 +72,6 @@ public class AudioDeviceAndroid
 
 	private AudioTrack _audioTrack = null;
 	private AudioRecord _audioRecord = null;
-
 	private Context _context;
 	private AudioManager _audioManager;
 
@@ -104,11 +105,6 @@ public class AudioDeviceAndroid
 	{
 		m_audioEffectOperatDevice = audioEffectOperatDevice;
 	}
-
-	/** 设置上下文引用 */
-//	public static void setContent(Context c){
-//		_context = c;
-//	}
 	
 	AudioDeviceAndroid()
 	{
@@ -129,18 +125,14 @@ public class AudioDeviceAndroid
 
 	public int InitRecording(int audioSource, int sampleRate)
 	{
-		Print.i(TAG, "==========InitRecording============");
+		DoLog("==========InitRecording============");
 		// get the minimum buffer size that can be used
 		int minRecBufSize = AudioRecord.getMinBufferSize(sampleRate,
 				AudioFormat.CHANNEL_CONFIGURATION_MONO,
 				AudioFormat.ENCODING_PCM_16BIT);
 
-		// DoLog("min rec buf size is " + minRecBufSize);
-
-		// double size to be more safe
 		int recBufSize = minRecBufSize * 2;
 		_bufferedRecSamples = (5 * sampleRate) / 200;
-		// DoLog("rough rec delay set to " + _bufferedRecSamples);
 
 		// release the object
 		if (_audioRecord != null)
@@ -151,14 +143,6 @@ public class AudioDeviceAndroid
 
 		try
 		{
-			// int version, recSource;
-			// version = android.os.Build.VERSION.SDK_INT;
-			// disable auto gain control up to 7
-			// if(version>= 7)
-			// recSource =6 ; //VOICE_RECOGNITION
-			// else
-			// recSource = audioSource;
-
 			_audioRecord = new AudioRecord(audioSource, sampleRate,
 					AudioFormat.CHANNEL_CONFIGURATION_MONO,
 					AudioFormat.ENCODING_PCM_16BIT,
@@ -170,14 +154,10 @@ public class AudioDeviceAndroid
 			return -1;
 		}
 
-		// check that the audioRecord is ready to be used
 		if (_audioRecord.getState() != AudioRecord.STATE_INITIALIZED)
 		{
-			// DoLog("rec not initialized " + sampleRate);
 			return -1;
 		}
-
-		// DoLog("rec sample rate set to " + sampleRate);
 
 		return _bufferedRecSamples;
 	}
@@ -198,7 +178,7 @@ public class AudioDeviceAndroid
 				Object object = method.invoke(recoder);
 				if (null != object)
 				{
-					Print.i(TAG, "SessionID = " + object.toString());
+					DoLog("SessionID = " + object.toString());
 					id = Integer.parseInt(object.toString());
 				}
 			}
@@ -220,18 +200,16 @@ public class AudioDeviceAndroid
 			SetAudioMode(true);
 		}
 
-		// start recording
 		try
 		{
 			_audioRecord.startRecording();
 
 			if (Build.VERSION.SDK_INT > 13)
 			{
-				// 如果4.0以上的手机走java采集，那么默认关闭AGC，AEC和NS
 				int sessionId = getAudioSessionId(_audioRecord);
 				if (-1 != sessionId)
 				{
-					FileLog.log(TAG, "audioSessionId = " + sessionId);
+					DoLog( "audioSessionId = " + sessionId);
 					LocalAudioDetector detect = LocalAudioCapabilityFactory.create();
 					if (null != detect)
 					{
@@ -239,11 +217,12 @@ public class AudioDeviceAndroid
 						{
 							if (null != m_audioEffectOperatDevice && m_audioEffectOperatDevice.isOpenAGC())
 							{
-								FileLog.log(TAG, "Open AGC.");
+								DoLog("Open AGC.");
 								open(EFFECT_TYPE_AGC, sessionId);
-							} else
+							}
+							else
 							{
-								FileLog.log(TAG, "Close AGC.");
+								DoLog( "Close AGC.");
 								close(EFFECT_TYPE_AGC, sessionId);
 							}
 						}
@@ -253,11 +232,12 @@ public class AudioDeviceAndroid
 
 							if (null != m_audioEffectOperatDevice && m_audioEffectOperatDevice.isOpenAEC())
 							{
-								FileLog.log(TAG, "Open AEC.");
+								DoLog("Open AEC.");
 								open(EFFECT_TYPE_AEC, sessionId);
-							} else
+							}
+							else
 							{
-								FileLog.log(TAG, "Close AEC.");
+								DoLog("Close AEC.");
 								close(EFFECT_TYPE_AEC, sessionId);
 							}
 						}
@@ -266,18 +246,20 @@ public class AudioDeviceAndroid
 						{
 							if (null != m_audioEffectOperatDevice && m_audioEffectOperatDevice.isOpenAEC())
 							{
-								FileLog.log(TAG, "Open NS.");
+								DoLog("Open NS.");
 								open(EFFECT_TYPE_NS, sessionId);
-							} else
+							}
+							else
 							{
-								FileLog.log(TAG, "Close NS.");
+								DoLog("Close NS.");
 								close(EFFECT_TYPE_NS, sessionId);
 							}
 						}
 					}
-				} else
+				}
+				else
 				{
-					FileLog.log_w(TAG, "get audio session failed.");
+					DoLog("get audio session failed.");
 				}
 			}
 		} catch (IllegalStateException e)
@@ -292,13 +274,11 @@ public class AudioDeviceAndroid
 
 	public int InitPlayback(int sampleRate)
 	{
-		Print.i(TAG, "==========InitPlayback============");
+		DoLog("==========InitPlayback============");
 		// get the minimum buffer size that can be used
 		int minPlayBufSize = AudioTrack.getMinBufferSize(sampleRate,
 				AudioFormat.CHANNEL_CONFIGURATION_MONO,
 				AudioFormat.ENCODING_PCM_16BIT);
-
-		// DoLog("min play buf size is " + minPlayBufSize);
 
 		int playBufSize = minPlayBufSize;
 		if (playBufSize < 6000)
@@ -306,7 +286,6 @@ public class AudioDeviceAndroid
 			playBufSize *= 2;
 		}
 		_bufferedPlaySamples = 0;
-		// DoLog("play buf size is " + playBufSize);
 
 		// release the object
 		if (_audioTrack != null)
@@ -357,14 +336,11 @@ public class AudioDeviceAndroid
 			}
 		}
 
-		// DoLog("play sample rate set to " + sampleRate);
-
 		if (_audioManager == null && _context != null)
 		{
 			_audioManager = (AudioManager) _context.getSystemService(Context.AUDIO_SERVICE);
 		}
 
-		// Return max playout volume
 		if (_audioManager == null)
 		{
 			// Don't know the max volume but still init is OK for playout,
@@ -600,7 +576,7 @@ public class AudioDeviceAndroid
 
 		}catch (Exception e)
 		{
-			DoLogWarnn("RecordAudio try failed: " + e.getMessage());
+			DoLog("RecordAudio try failed: " + e.getMessage());
 
 		}finally
 		{
@@ -614,59 +590,51 @@ public class AudioDeviceAndroid
 
 	private void SetAudioMode(boolean startCall)
 	{
-		// DoLog("==========SetAudioMode============ startCall = " + startCall);
-		// if (startCall) {
-		// DoLog("===========callStart========");
-		// // 进入通话
-		// if (_audioManager == null && _context != null) {
-		// _audioManager = (AudioManager)
-		// _context.getSystemService(Context.AUDIO_SERVICE);
-		// }
-		//
-		// if (_audioManager == null) {
-		// DoLogWarnn("Could not set audio mode - no audio manager");
-		// return;
-		// }
-		//
-		//
-		// // Be careful! Can't use Freepp.config here! SharedPreferences
-		// // object can't be accessed in multiple processes!
-		// SharedPreferences sp =
-		// Freepp.context.getSharedPreferences(Config.CONFIG_FILE, 0);
-		// int audioMode = sp.getInt(ConfigKey.KEY_USER_AUDIO_MODE,
-		// DeviceUtil.getDeviceAudioMode());
-		//
-		// DoLog("==========SetAudioMode============ mode = " + audioMode);
-		// if (audioMode == _audioManager.getMode()) {
-		// Print.w(logTag, "current mode is " + audioMode + ", so not set.");
-		// } else {
-		// _audioManager.setMode(audioMode);
-		// }
-		//
-		//
-		// } else {
-		// DoLog("===========callEnd========");
-		// // 通话结束 这不需要在把通话模式设置成 一般正常模式 会在状态机里面统一做处理。
-		// if (_audioManager == null && _context != null) {
-		// _audioManager = (AudioManager)
-		// _context.getSystemService(Context.AUDIO_SERVICE);
-		// }
-		//
-		// if (_audioManager == null) {
-		// DoLogWarnn("Could not set audio mode - no audio manager");
-		// return;
-		// }
-		// _audioManager.setMode(AudioManager.MODE_NORMAL);
-		// _audioManager.setSpeakerphoneOn(false);
-		//
-		// }
+		 DoLog("==========SetAudioMode============ startCall = " + startCall);
+		 if (startCall) {
+		 	// 进入通话
+		 	if (_audioManager == null && _context != null) {
+		 		_audioManager = (AudioManager)
+		 		_context.getSystemService(Context.AUDIO_SERVICE);
+		 	}
+
+		 	if (_audioManager == null) {
+				DoLog("Could not set audio mode - no audio manager");
+		 		return;
+		 	}
+
+
+		 	int audioMode = DeviceUtil.getDeviceAudioMode();
+
+		 	DoLog("==========SetAudioMode============ mode = " + audioMode);
+		 	if (audioMode == _audioManager.getMode()) {
+				DoLog("current mode is " + audioMode + ", so not set.");
+		 	} else {
+		 		_audioManager.setMode(audioMode);
+			}
+		 }
+		 else
+		 {
+		 	// 通话结束 这不需要在把通话模式设置成 一般正常模式 会在状态机里面统一做处理。
+		 	if (_audioManager == null && _context != null) {
+		 		_audioManager = (AudioManager)
+		 		_context.getSystemService(Context.AUDIO_SERVICE);
+		 	}
+
+			if (_audioManager == null) {
+				DoLog("Could not set audio mode - no audio manager");
+		 		return;
+		 	}
+		 	_audioManager.setMode(AudioManager.MODE_NORMAL);
+		 	_audioManager.setSpeakerphoneOn(false);
+		 }
 	}
 
 	final String logTag = "WebRTC AD java";
 
 	private void DoLog(String msg)
 	{
-		Print.i(logTag, msg);
+		Log.e(logTag, msg);
 	}
 
 	/**
@@ -676,9 +644,11 @@ public class AudioDeviceAndroid
 	 */
 	public int getStreamType()
 	{
-		Print.i("getStreamType", "=============getStreamType================");
 		String model = Build.MODEL.replaceAll(" +", "");
 		String brand = android.os.Build.BRAND;
+
+		int streamType = 0;
+
 		if (model != null)
 			model = model.toLowerCase(Locale.getDefault());
 		else
@@ -688,33 +658,33 @@ public class AudioDeviceAndroid
 			brand = brand.toLowerCase(Locale.getDefault());
 		else
 			brand = "unknown";
-		int streamType = 0;
 
-		Print.i("getStreamType", "model:" + model + ", brand:" + brand);
-		// //////////////
-		if ("xiaomi".equals(brand))
+		DoLog( "model:" + model + ", brand:" + brand);
+
+		/*if ("xiaomi".equals(brand))
 		{
 			streamType = 1;
-		} else if ("sony".equals(brand))
+		}
+		else if ("sony".equals(brand))
 		{
 			if ("l36h".equals(model))
 			{
 				streamType = 1;
 			}
-		} else if ("huawei".equals(brand))
+		}
+		else if ("huawei".equals(brand))
 		{
 			if ("huaweig520-0000".equals(model))
 			{
 				streamType = 1;
 			}
 		}
-		// else if ("samsung".equals(brand)) {
-		// if ("gt-i9300".equals(model))
-		// streamType = 1;
-		//
-		// }
+		else if ("samsung".equals(brand)) {
+			if ("gt-i9300".equals(model))
+				streamType = 1;
+		}*/
 
-		Print.i("getStreamType", "streamType = " + streamType);
+		DoLog( "streamType = " + streamType);
 
 		if (1 == streamType)
 		{
@@ -727,11 +697,6 @@ public class AudioDeviceAndroid
 	public static int getStreamControlType()
 	{
 		return STREAM_TYPE;
-	}
-
-	private void DoLogWarnn(String msg)
-	{
-		Print.w(logTag, msg);
 	}
 
 	private String TAG = getClass().getSimpleName();
@@ -784,20 +749,15 @@ public class AudioDeviceAndroid
 
 				efect.setControlStatusListener(new OnControlStatusChangeListener()
 				{
-
 					@Override
 					public void onControlStatusChange(AudioEffect effect, boolean controlGranted)
 					{
-						// TODO Auto-generated method stub
-
 						Print.i(TAG, "onControlStatusChange id = " + effect.getId() + ", controlGranted = " + controlGranted);
-
 					}
 				});
 
 				efect.setEnableStatusListener(new OnEnableStatusChangeListener()
 				{
-
 					@Override
 					public void onEnableStatusChange(AudioEffect effect, boolean enabled)
 					{
@@ -829,7 +789,6 @@ public class AudioDeviceAndroid
 				{
 					ns = efect;
 				}
-				// }
 			}
 		} catch (ClassNotFoundException e)
 		{
@@ -971,7 +930,6 @@ public class AudioDeviceAndroid
 				public void onControlStatusChange(AudioEffect effect, boolean controlGranted)
 				{
 					// TODO Auto-generated method stub
-
 					Print.i(TAG, "onControlStatusChange id = " + effect.getId() + ", controlGranted = " + controlGranted);
 
 				}

@@ -4,44 +4,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/et_server"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="192.168.6.57"
-        android:hint="请输入服务器地址" />
 
     <EditText
-        android:id="@+id/et_phone"
+        android:id="@+id/et_old_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="+8613800000000"
-        android:hint="请输入电话号码"
-        android:visibility="gone"/>
+        android:hint="请输入旧密码(6-20位)" />
     <EditText
-        android:id="@+id/et_mail"
+        android:id="@+id/et_new_password1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="10000@qq.com"
-        android:hint="请输入E-mail"/>
-
+        android:hint="请输入新密码(6-20位)" />
     <EditText
-        android:id="@+id/et_password"
+        android:id="@+id/et_new_password2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="12345678"
-        android:hint="请输入密码(6-20位)" />
-
+        android:hint="请再次输入新密码(6-20位)" />
     <Button
-        android:id="@+id/btn_login"
+        android:id="@+id/btn_change"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="登录" />
-
+        android:text="修改密码" />
 
 </LinearLayout>

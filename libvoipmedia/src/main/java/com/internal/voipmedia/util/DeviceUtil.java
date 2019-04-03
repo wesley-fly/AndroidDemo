@@ -1,10 +1,7 @@
 package com.internal.voipmedia.util;
 
-import android.media.AudioManager;
 import android.os.Build;
-
 import com.internal.webrtc.adapter.AudioModeAdapterManager;
-
 import java.util.Locale;
 
 /**
@@ -102,38 +99,4 @@ public class DeviceUtil {
 	public static int getDeviceAudioMode() {
 		return AudioModeAdapterManager.getInstance().getAudioMode();
 	}
-
-//	/**
-//	 * 是否Debug，如果是Debug模式返回true，其他返回false
-//	 * 
-//	 * @return
-//	 */
-//	public static boolean isDebug() {
-//		return ApplicationInfo.FLAG_DEBUGGABLE == (Freepp.context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE);
-//	}
-//
-//	/**
-//	 * 判断摄像头 是否存在
-//	 * 
-//	 * @return 存在 返回true，其他返回false
-//	 */
-//	public static boolean checkCameraHardware() {
-//		if (Freepp.context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-//			// this device has a camera
-//			return true;
-//		} else {
-//			// no camera on this device
-//			return false;
-//		}
-//	}
-//
-//	/**
-//	 * 隐藏软键盘
-//	 * 
-//	 * @param windowToken
-//	 */
-//	public static void hideSoftInput(IBinder windowToken) {
-//		InputMethodManager imm = (InputMethodManager) Freepp.context.getSystemService(Context.INPUT_METHOD_SERVICE);
-//		imm.hideSoftInputFromWindow(windowToken, InputMethodManager.HIDE_NOT_ALWAYS);
-//	}
 }

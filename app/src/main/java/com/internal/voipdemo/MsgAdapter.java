@@ -37,12 +37,14 @@ public class MsgAdapter extends BaseAdapter
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(int i, View view, ViewGroup viewGroup)
+    {
         ViewHolder holder = null;
         if(null == view) {
             view = LayoutInflater.from(m_context).inflate(R.layout.msg_item, null);
             holder = new ViewHolder();
-            holder.accountid = (TextView) view.findViewById(R.id.tv_item_account);
+            holder.accountId = (TextView) view.findViewById(R.id.tv_item_account);
+            holder.msgText = (TextView) view.findViewById(R.id.tv_item_msg);
             holder.result = (TextView) view.findViewById(R.id.tv_item_result);
             holder.state = (TextView) view.findViewById(R.id.tv_item_state);
             view.setTag(holder);
@@ -51,18 +53,32 @@ public class MsgAdapter extends BaseAdapter
         }
         MsgEntity msgEntity = (MsgEntity)m_dataList.get(i);
 
-        holder.accountid.setText(msgEntity.getMsgFromId());
+        holder.accountId.setText(msgEntity.getMsgAccount()+":");
 
-        holder.result.setText(String.valueOf(msgEntity.getMsgStatus()));
+        holder.msgText.setText(msgEntity.getMsgText());
 
-        holder.state.setText(String.valueOf(msgEntity.getMsgId()));
+        holder.result.setText(String.valueOf(msgEntity.getMsgSendState()));
+
+        if(msgEntity.getMsgPeerState() == 0)
+        {
+            holder.state.setText("已发送");
+        }
+        else if(msgEntity.getMsgPeerState() == 1)
+        {
+            holder.state.setText("已送达");
+        }
+        else if(msgEntity.getMsgPeerState() == 2)
+        {
+            holder.state.setText("已读");
+        }
 
         return view;
     }
 
     public class ViewHolder
     {
-        private TextView accountid;
+        private TextView accountId;
+        private TextView msgText;
         private TextView result;
         private TextView state;
     }

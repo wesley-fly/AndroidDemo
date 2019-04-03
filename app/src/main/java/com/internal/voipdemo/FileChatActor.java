@@ -17,51 +17,74 @@ import java.util.Map;
 public class FileChatActor extends ChatActor
 {
     public static final String TAG = FileChatActor.class.getSimpleName();
+
     public final String SDCARD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath()+"/voipmedia";
 
-    static final int FILE_BASE = CHAT_BASE << 3;
+    FileChatEventListener mFileChatEventListener;
+
+    static final int FILE_BASE = CHAT_BASE << 4;
     static final int FILE_SEND_MSG = FILE_BASE + 1;
     static final int FILE_RECV_MSG = FILE_BASE + 2;
     static final int FILE_UPLOAD_MSG = FILE_BASE + 3;
     static final int FILE_DOWNLOAD_MSG = FILE_BASE + 4;
 
     public static Map<String,String> addTextMap = null;
-    public int sendFileMessage(String destId, String fileSendPath, String addText) {
 
-        String extName = FileUtils.getExtName(fileSendPath, '.');
-        mMimeTypeStr = FileUtils.getMimeType(extName).toString();
-
-        String fileMsgId = VoIPMediaAPI.getInstance().sendMessage(destId, mMimeTypeStr,addText, fileSendPath, null);
-        Log.e(TAG, "onSendMessageEvent return msgid:" + fileMsgId);
-        if (fileMsgId == null)
-        {
-            return -1;
-        }
-        mSendMsgMap.put(fileMsgId, fileSendPath);
-        addTextMap.put(fileMsgId, addText);
-
-        return 0;
-    }
-    public FileChatActor(Handler handler) {
+    public FileChatActor(Handler handler)
+    {
         mHandler = handler;
         if(addTextMap == null){
             addTextMap = new LinkedHashMap<String, String>();
         }
         mFileChatEventListener = new FileChatEventListener();
     }
-    FileChatEventListener mFileChatEventListener;
+
+    public int sendFileMessage(String destId, String fileSendPath, String addText)
+    {
+        String extName = FileUtils.getExtName(fileSendPath, '.');
+
+        mMimeTypeStr = FileUtils.getMimeType(extName).toString();
+        String fileMsgId = VoIPMediaAPI.getInstance().sendMessage(destId, mMimeTypeStr,addText, fileSendPath, null);
+
+        if (fileMsgId == null)
+        {
+            return -1;
+        }
+        mSendFileMsgMap.put(fileMsgId, fileSendPath);
+        addTextMap.put(fileMsgId, addText);
+
+        return 0;
+    }
 
     class FileChatEventListener extends AppSimpleListener
     {
         @Override
+        public void onSendMessageEvent(String messageId, int sendResult,long timestamp)
+        {
+            if (mSendFileMsgMap.containsKey(messageId)) {
+                Message msg = new Message();
+                msg.what = FILE_SEND_MSG;
+                msg.obj = mSendFileMsgMap.get(messageId)+"\n"+addTextMap.get(messageId);
+                Bundle bundle = new Bundle();
+                bundle.putString("msgId", messageId);
+                bundle.putInt("resultCode", sendResult);
+                bundle.putLong("timestamp", timestamp);
+                msg.setData(bundle);
+                mHandler.sendMessage(msg);
+
+                mSendFileMsgMap.remove(messageId);
+                addTextMap.remove(messageId);
+            }
+        }
+        @Override
         public void onReceiveMessageEvent(int type, MessageBase message) {
-            Log.e(TAG, "FileChatEventListener->onReceiveMessageEvent Start");
             super.onReceiveMessageEvent(type,message);
             if (message.getClass() == MessageOneToOne.class)
             {
                 MessageOneToOne o2oMsg = (MessageOneToOne)message;
                 if(o2oMsg.getMimeType().isFile())
                 {
+                    Log.e(TAG, "收到附件类型消息,开始处理");
                     String dstSender = o2oMsg.getSenderId();
                     String msgId = o2oMsg.getMessageId();
                     VoIPMediaAPI.getInstance().reportMessageStatus(dstSender, msgId, MessageStatus.MSG_STATUS_RECEIVED); // 已送达
@@ -71,7 +94,10 @@ public class FileChatActor extends ChatActor
                     String fileName = SDCARD_PATH+ "/" + o2oMsg.getFilename();
                     String textContent = o2oMsg.getTextContent();
                     Bundle bundle = new Bundle();
+                    bundle.putString("msgId", msgId);
                     bundle.putString("addContent", textContent);
+                    bundle.putString("senderId", dstSender);
+                    bundle.putInt("resultCode", 0);
                     msg.setData(bundle);
                     msg.obj = fileName;
                     mHandler.sendMessage(msg);
@@ -81,23 +107,13 @@ public class FileChatActor extends ChatActor
         }
 
         @Override
-        public void onUploadMessageAttachmentProgressEvent(String messageId, int uploadProgress) {
-            if (mSendMsgMap.containsKey(messageId))
+        public void onUploadMessageAttachmentProgressEvent(String messageId, int uploadProgress)
+        {
+            if (mSendFileMsgMap.containsKey(messageId))
             {
                 Message msg = new Message();
                 msg.what = FILE_UPLOAD_MSG;
                 msg.arg1 = uploadProgress;
-                Bundle bundle = new Bundle();
-                bundle.putString("msgId", messageId);
-
-                if (uploadProgress == 100)
-                {
-                    msg.obj = mSendMsgMap.get(messageId);
-                    bundle.putString("addContent", addTextMap.get(messageId));
-                    mSendMsgMap.remove(messageId);
-                    addTextMap.remove(messageId);
-                }
-                msg.setData(bundle);
                 mHandler.sendMessage(msg);
             }
         }

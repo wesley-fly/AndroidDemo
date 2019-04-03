@@ -32,11 +32,11 @@ public class MyApplication extends Application implements EventListener {
         super.onCreate();
         context = getApplicationContext();
 
-        String ServerAddr = SharedPerfUtils.getServerHost(this);
-        String LocalDBPath = getApplicationContext().getFilesDir().toString();
+        String ServerHost = SharedPerfUtils.getServerHost(this);
+        String LocalDBPath = context.getFilesDir().toString();
 
-        Log.e(TAG, "VoIP 初始化,初始化需要先设定服务器地址: " + ServerAddr + ",本地数据库路径:" + LocalDBPath);
-        VoIPMediaAPI.getInstance().setSystemParams(ParametersName.VOIP_CS_SERVER, ServerAddr);
+        Log.e(TAG, "VoIP 初始化,初始化需要先设定服务器地址: " + ServerHost + ",本地数据库路径:" + LocalDBPath);
+        VoIPMediaAPI.getInstance().setSystemParams(ParametersName.VOIP_CS_SERVER, ServerHost);
         VoIPMediaAPI.getInstance().setSystemParams(ParametersName.VOIP_LOCAL_DB_PATH, LocalDBPath);
         VoIPMediaAPI.getInstance().setSystemParams(ParametersName.VOIP_ENABLE_DEBUG, "1");
         boolean initOk = VoIPMediaAPI.getInstance().initialization(getApplicationContext(),this);
@@ -52,18 +52,18 @@ public class MyApplication extends Application implements EventListener {
     }
     private void tryAutoLoginAccount() {
         final String appUserPw = SharedPerfUtils.getPassword(this);
-        final String appPhoneNumber = SharedPerfUtils.getPhoneNumber(this);
         final String appRootCS = SharedPerfUtils.getServerHost(this);
+        final String appEmail = SharedPerfUtils.getEmail(this);
 
-        if (appPhoneNumber != null && appUserPw != null && appRootCS != null)
+        if (appEmail != null && appUserPw != null && appRootCS != null)
         {
             new Thread(new Runnable()
             {
                 @Override
                 public void run()
                 {
-                    Log.e(TAG, "自动登陆帐号: " + appPhoneNumber + ", 自动登陆密码: " + appUserPw);
-                    String AccountId = VoIPMediaAPI.getInstance().loginAccount(appPhoneNumber, appUserPw);
+                    Log.e(TAG, "自动登陆帐号: " + appEmail + ", 自动登陆密码: " + appUserPw);
+                    String AccountId = VoIPMediaAPI.getInstance().loginAccountByMail(appEmail, appUserPw);
                     if (AccountId.length() == 8)
                     {
                         Log.e(TAG, "自动登陆帐号成功,返回AccountId = " + AccountId);
@@ -121,12 +121,15 @@ public class MyApplication extends Application implements EventListener {
     @Override
     public void onUploadMessageAttachmentProgressEvent(String messageId, int uploadProgress)
     {
-
+//        Log.e(TAG, "onUploadMessageAttachmentProgressEvent messageId = " + messageId + ", uploadProgress = " + uploadProgress);
+        for (EventListener listener : listeners) {
+            listener.onUploadMessageAttachmentProgressEvent(messageId, uploadProgress);
+        }
     }
     @Override
     public void onDownloadMessageAttachmentProgressEvent(String messageId, int downloadProgress)
     {
-        Log.e(TAG, "onDownloadMessageAttachmentProgressEvent messageId = " + messageId + ", downloadProgress = " + downloadProgress);
+//        Log.e(TAG, "onDownloadMessageAttachmentProgressEvent messageId = " + messageId + ", downloadProgress = " + downloadProgress);
         for (EventListener listener : listeners) {
             listener.onDownloadMessageAttachmentProgressEvent(messageId,downloadProgress);
         }

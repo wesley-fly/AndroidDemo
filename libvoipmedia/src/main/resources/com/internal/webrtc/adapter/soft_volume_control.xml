@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 主要用来适配，有的机型AEC，AGCNS  -->
 <devices>
-	<device>
-        <manufacturer>htc</manufacturer><!-- 设备制造厂商  全部小写 -->
-		<model>htcvision</model><!-- 设备型号 全部小写 -->
-		<sdk_leve>8</sdk_leve>	<!-- 手机对应SDK的版本号 --> 
-		<volume_value>3.0</volume_value>
-	</device>
-	<device>
-        <manufacturer>samsung</manufacturer><!-- 设备制造厂商  全部小写 -->
-		<model>gt-n7100</model><!-- 设备型号 全部小写 -->
-		<sdk_leve>16</sdk_leve>	<!-- 手机对应SDK的版本号 --> 
-		<volume_value>3.0</volume_value>
-	</device>
-	<device>
-        <manufacturer>huawei</manufacturer><!-- 设备制造厂商  全部小写 -->
-		<model>huaweip6-u06</model><!-- 设备型号 全部小写 -->
-		<sdk_leve>17</sdk_leve>	<!-- 手机对应SDK的版本号 --> 
-		<volume_value>3.0</volume_value>
-	</device>
+	<!--<device>-->
+        <!--<manufacturer>htc</manufacturer>&lt;!&ndash; 设备制造厂商  全部小写 &ndash;&gt;-->
+		<!--<model>htcvision</model>&lt;!&ndash; 设备型号 全部小写 &ndash;&gt;-->
+		<!--<sdk_leve>8</sdk_leve>	&lt;!&ndash; 手机对应SDK的版本号 &ndash;&gt; -->
+		<!--<volume_value>3.0</volume_value>-->
+	<!--</device>-->
+	<!--<device>-->
+        <!--<manufacturer>samsung</manufacturer>&lt;!&ndash; 设备制造厂商  全部小写 &ndash;&gt;-->
+		<!--<model>gt-n7100</model>&lt;!&ndash; 设备型号 全部小写 &ndash;&gt;-->
+		<!--<sdk_leve>16</sdk_leve>	&lt;!&ndash; 手机对应SDK的版本号 &ndash;&gt; -->
+		<!--<volume_value>3.0</volume_value>-->
+	<!--</device>-->
+	<!--<device>-->
+        <!--<manufacturer>huawei</manufacturer>&lt;!&ndash; 设备制造厂商  全部小写 &ndash;&gt;-->
+		<!--<model>huaweip6-u06</model>&lt;!&ndash; 设备型号 全部小写 &ndash;&gt;-->
+		<!--<sdk_leve>17</sdk_leve>	&lt;!&ndash; 手机对应SDK的版本号 &ndash;&gt; -->
+		<!--<volume_value>3.0</volume_value>-->
+	<!--</device>-->
 </devices>
