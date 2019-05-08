@@ -22,69 +22,97 @@ public class BaseActivity extends AppCompatActivity {
     protected final int LOGIN_ACCOUNT_SUCCESS = 0;
     protected final int LOGIN_ACCOUNT_FAILED = 1;
     protected final int LOGIN_ACCOUNT_PASS_LEN_ERROR = 2;
+    protected final int LOGIN_ACCOUNT_LEN_ERROR = 3;
+    protected final int LOGIN_SERVER_LEN_ERROR = 4;
+    protected final int QUERY_APP_ACCOUNT_SUCCESS = 5;
+    protected final int QUERY_APP_ACCOUNT_FAILED = 6;
     protected ProgressDialog progressDialog;
 
-    protected void AppLoginAppAccount(final String hostServer, final String email, final String passWord, final Handler handler)
+    protected void AppLoginAppAccount(final String hostServer, final String appAccount, final Handler handler)
     {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String AccountId = "";
-                int passLen = passWord.length();
-                if(passLen < 6 || passLen > 20)
+                int passLen = appAccount.length();
+                if(passLen < 1 || passLen > 40)
                 {
-                    handler.sendEmptyMessage(LOGIN_ACCOUNT_PASS_LEN_ERROR);
+                    handler.sendEmptyMessage(LOGIN_ACCOUNT_LEN_ERROR);
                     return;
                 }
 
                 VoIPMediaAPI.getInstance().setSystemParams(ParametersName.VOIP_CS_SERVER,hostServer);
-                Log.e(TAG, "首先检查此手机号码的注册状态,E-mail:" + email );
-                int status = VoIPMediaAPI.getInstance().checkAccountByMail(email);
-
-                switch (status)
-                {
-                    case AccountStatus.ACCOUNT_USER_NEW:
-                    {
-                        Log.e(TAG, "新用户,进行注册操作,注册E-mail:" + email + ",密码:" + passWord);
-
-                        if(VoIPMediaAPI.getInstance().registerAccountByMail(email, passWord) == 0)
-                        {
-                            Log.e(TAG, "新用户注册成功,接着登陆...");
-                            AccountId = VoIPMediaAPI.getInstance().loginAccountByMail(email, passWord);
-                        }
-                    }
-                    break;
-                    case AccountStatus.ACCOUNT_USER_NORMAL:
-                    {
-                        Log.e(TAG, "已注册用户,进行登陆,登陆E-mail:" + email + ",密码:" + passWord);
-                        AccountId = VoIPMediaAPI.getInstance().loginAccountByMail(email, passWord);
-                    }
-                    break;
-                    case AccountStatus.ACCOUNT_USER_NO_PASS:
-                    {
-                        Log.e(TAG, "已注册用户,未设置密码用户,需要APP确保不会发生此情况");
-                    }
-                    break;
-                    default:
-                    {
-                        Log.e(TAG, "检测此手机号码格式不合法,或状态返回未知,或服务器不可达,状态返回:" + status );
-                    }
-                    break;
-                }
+                AccountId = VoIPMediaAPI.getInstance().bindAccount(appAccount);
+//                Log.e(TAG, "首先检查此手机号码的注册状态,E-mail:" + email );
+//                int status = VoIPMediaAPI.getInstance().checkAccountByMail(email);
+//
+//                switch (status)
+//                {
+//                    case AccountStatus.ACCOUNT_USER_NEW:
+//                    {
+//                        Log.e(TAG, "新用户,进行注册操作,注册E-mail:" + email + ",密码:" + passWord);
+//
+//                        if(VoIPMediaAPI.getInstance().registerAccountByMail(email, passWord) == 0)
+//                        {
+//                            Log.e(TAG, "新用户注册成功,接着登陆...");
+//                            AccountId = VoIPMediaAPI.getInstance().loginAccountByMail(email, passWord);
+//                        }
+//                    }
+//                    break;
+//                    case AccountStatus.ACCOUNT_USER_NORMAL:
+//                    {
+//                        Log.e(TAG, "已注册用户,进行登陆,登陆E-mail:" + email + ",密码:" + passWord);
+//                        AccountId = VoIPMediaAPI.getInstance().loginAccountByMail(email, passWord);
+//                    }
+//                    break;
+//                    case AccountStatus.ACCOUNT_USER_NO_PASS:
+//                    {
+//                        Log.e(TAG, "已注册用户,未设置密码用户,需要APP确保不会发生此情况");
+//                    }
+//                    break;
+//                    default:
+//                    {
+//                        Log.e(TAG, "检测此手机号码格式不合法,或状态返回未知,或服务器不可达,状态返回:" + status );
+//                    }
+//                    break;
+//                }
 
                 if(AccountId.length() == 8)
                 {
                     Log.e(TAG, "用户登陆成功,存储至本地APP数据");
                     SharedPerfUtils.setServerHost(BaseActivity.this, hostServer);
                     SharedPerfUtils.setAccountId(BaseActivity.this, AccountId);
-                    SharedPerfUtils.setPassword(BaseActivity.this, passWord);
-                    SharedPerfUtils.setEmail(BaseActivity.this, email);
+                    SharedPerfUtils.setAppAccount(BaseActivity.this, appAccount);
+//                    SharedPerfUtils.setPassword(BaseActivity.this, passWord);
+//                    SharedPerfUtils.setEmail(BaseActivity.this, email);
                     handler.sendEmptyMessage(LOGIN_ACCOUNT_SUCCESS);
                 }
                 else
                 {
                     Log.e(TAG, "用户登陆失败...");
                     handler.sendEmptyMessage(LOGIN_ACCOUNT_FAILED);
+                }
+            }
+        }).start();
+    }
+    protected void queryIdByAppAccount(final String appAccountId, final Handler handler) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                String id = VoIPMediaAPI.getInstance().queryIDByAccount(appAccountId);
+
+                if (id != null && id.length() > 0)
+                {
+                    Message msg = handler.obtainMessage();
+                    msg.what = QUERY_APP_ACCOUNT_SUCCESS;
+                    msg.obj = id;
+                    handler.sendMessage(msg);
+                }
+                else
+                {
+                    handler.sendEmptyMessage(QUERY_APP_ACCOUNT_FAILED);
                 }
             }
         }).start();
@@ -133,7 +161,7 @@ public class BaseActivity extends AppCompatActivity {
                     Message msg = new Message();
                     msg.what = SysEventType.SYS_EVENT_KICKOUT;
                     mHandler.sendMessage(msg);
-                    SharedPerfUtils.clear(getApplicationContext());
+                    SharedPerfUtils.clearAllPref(getApplicationContext());
                 }
                 break;
                 case SysEventType.SYS_EVENT_DISCONNECT:

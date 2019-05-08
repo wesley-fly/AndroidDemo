@@ -88,52 +88,62 @@ public class VoIPMediaAPIImpl extends VoIPMediaAPI implements StatusJniListener
         }
     }
     @Override
-    public int checkAccount(String phoneNumber)
+    public String bindAccount(String userAccount)
     {
-        return m_voip_jni.checkAccount(phoneNumber);
+        return m_voip_jni.bindAppAccount(userAccount);
     }
-
     @Override
-    public int checkAccountByMail(String Email)
+    public String queryIDByAccount(String userAccount)
     {
-        return m_voip_jni.checkAccountByMail(Email);
+        return m_voip_jni.queryIDByAccount(userAccount);
     }
-
-    @Override
-    public int registerAccount(String phoneNumber,String countryCode,String passWord)
-    {
-        return m_voip_jni.registerAccount(phoneNumber,countryCode,passWord,Utils.generatePassword(8));
-    }
-
-    @Override
-    public int registerAccountByMail(String Email, String passWord)
-    {
-        return m_voip_jni.registerAccountByMail(Email, passWord, Utils.generatePassword(8));
-    }
-
-    @Override
-    public String loginAccount(String phoneNumber,String passWord)
-    {
-        return m_voip_jni.loginAccount(phoneNumber, passWord);
-    }
-
-    @Override
-    public String loginAccountByMail(String Email,String passWord)
-    {
-        return m_voip_jni.loginAccountByMail(Email, passWord);
-    }
-
-    @Override
-    public int changeAccountPassword(String oldPassWord,String newPassWord)
-    {
-        return m_voip_jni.changeAccountPassWD(oldPassWord, newPassWord);
-    }
-
-    @Override
-    public int changeAccountPasswordByMail(String oldPassWord,String newPassWord)
-    {
-        return m_voip_jni.changeAccountPassWDByMail(oldPassWord, newPassWord);
-    }
+//    @Override
+//    public int checkAccount(String phoneNumber)
+//    {
+//        return m_voip_jni.checkAccount(phoneNumber);
+//    }
+//
+//    @Override
+//    public int checkAccountByMail(String Email)
+//    {
+//        return m_voip_jni.checkAccountByMail(Email);
+//    }
+//
+//    @Override
+//    public int registerAccount(String phoneNumber,String countryCode,String passWord)
+//    {
+//        return m_voip_jni.registerAccount(phoneNumber,countryCode,passWord,Utils.generatePassword(8));
+//    }
+//
+//    @Override
+//    public int registerAccountByMail(String Email, String passWord)
+//    {
+//        return m_voip_jni.registerAccountByMail(Email, passWord, Utils.generatePassword(8));
+//    }
+//
+//    @Override
+//    public String loginAccount(String phoneNumber,String passWord)
+//    {
+//        return m_voip_jni.loginAccount(phoneNumber, passWord);
+//    }
+//
+//    @Override
+//    public String loginAccountByMail(String Email,String passWord)
+//    {
+//        return m_voip_jni.loginAccountByMail(Email, passWord);
+//    }
+//
+//    @Override
+//    public int changeAccountPassword(String oldPassWord,String newPassWord)
+//    {
+//        return m_voip_jni.changeAccountPassWD(oldPassWord, newPassWord);
+//    }
+//
+//    @Override
+//    public int changeAccountPasswordByMail(String oldPassWord,String newPassWord)
+//    {
+//        return m_voip_jni.changeAccountPassWDByMail(oldPassWord, newPassWord);
+//    }
 
     @Override
     public int logoutAccount()

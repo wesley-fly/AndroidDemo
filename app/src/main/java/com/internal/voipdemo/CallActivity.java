@@ -2,6 +2,8 @@ package com.internal.voipdemo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -20,10 +22,58 @@ public class CallActivity extends BaseActivity
 
     private final int CALL_AUDIO = 0;
 
+    private int callType = CALL_AUDIO;
+
     private String[] items = { "语音呼叫" };
 
     Intent intent = null;
 
+    String dstAccountId;
+
+    private Handler handler = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            if(msg.what == QUERY_APP_ACCOUNT_SUCCESS)
+            {
+                dstAccountId = (String) msg.obj;
+                if(dstAccountId.equals(SharedPerfUtils.getAccountId(CallActivity.this)))
+                {
+                    showToastMessage("不能拨打自己！");
+                    return;
+                }
+                switch (callType)
+                {
+                    case CALL_AUDIO:
+                    {
+                        MyApplication.isTalking = true;
+
+                        String callId = VoIPMediaAPI.getInstance().makeCall(dstAccountId, MediaType.MEDIA_AUDIO);
+                        if(callId==null || callId.equals(""))
+                        {
+                            MyApplication.isTalking = false;
+                            showToastMessage("呼叫失败");
+                            return;
+                        }
+                        intent = new Intent(CallActivity.this, TalkingActivity.class);
+                        intent.putExtra("call_id", callId);
+                        intent.putExtra("dst_id", dstAccountId);
+                        intent.putExtra("is_callee", 0);
+                        startActivity(intent);
+                    }
+                    break;
+
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                showToastMessage("该用户不存在！");
+            }
+        }
+    };
     private AppSimpleListener appSimpleListener = new AppSimpleListener()
     {
         @Override
@@ -74,26 +124,14 @@ public class CallActivity extends BaseActivity
                     showToastMessage("当前无网络");
                     return;
                 }
-
+                String dstAccountId = "";
                 switch (position)
                 {
                     case CALL_AUDIO:
-                        String AccountId = accountEditText.getText().toString().trim();
-                        if (!TextUtils.isEmpty(AccountId))
+                        dstAccountId = accountEditText.getText().toString().trim();
+                        if (!TextUtils.isEmpty(dstAccountId))
                         {
-                            MyApplication.isTalking = true;
-                            String callId = VoIPMediaAPI.getInstance().makeCall(AccountId, MediaType.MEDIA_AUDIO);
-                            if(callId==null || callId.equals(""))
-                            {
-                                MyApplication.isTalking = false;
-                                showToastMessage("呼叫失败");
-                                return;
-                            }
-                            intent = new Intent(CallActivity.this, TalkingActivity.class);
-                            intent.putExtra("call_id", callId);
-                            intent.putExtra("dst_id", AccountId);
-                            intent.putExtra("is_callee", 0);
-                            startActivity(intent);
+                            queryIdByAppAccount(dstAccountId, handler);
                         }
                         else
                         {

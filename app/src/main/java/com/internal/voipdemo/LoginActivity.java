@@ -15,8 +15,9 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
 
         final EditText editTextHost = (EditText)findViewById(R.id.et_server);
-        final EditText editTextPassword = (EditText)findViewById(R.id.et_password);
-        final EditText editTextMail = (EditText)findViewById(R.id.et_mail);
+        final EditText editTextAppAccount = (EditText)findViewById(R.id.et_appaccount);
+//        final EditText editTextPassword = (EditText)findViewById(R.id.et_password);
+//        final EditText editTextMail = (EditText)findViewById(R.id.et_mail);
 
         final Handler handler = new Handler()
         {
@@ -27,9 +28,9 @@ public class LoginActivity extends BaseActivity {
                 {
                     enterApplication();
                 }
-                else if(msg.what == LOGIN_ACCOUNT_PASS_LEN_ERROR)
+                else if(msg.what == LOGIN_ACCOUNT_LEN_ERROR)
                 {
-                    showToastMessage("密码长度为6-20位，请重新输入！");
+                    showToastMessage("APP ACCOUNT Must < 40 Length");
                 }
                 else
                 {
@@ -42,12 +43,13 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 String hostServer = editTextHost.getText().toString().trim();
-                String passWord = editTextPassword.getText().toString().trim();
-                String email = editTextMail.getText().toString().trim();
+                String appAccount = editTextAppAccount.getText().toString().trim();
+//                String passWord = editTextPassword.getText().toString().trim();
+//                String email = editTextMail.getText().toString().trim();
 
-                if (!TextUtils.isEmpty(passWord)) {
+                if (!TextUtils.isEmpty(appAccount)) {
                     showProgressDialog("登录中...");
-                    AppLoginAppAccount(hostServer, email, passWord,  handler);
+                    AppLoginAppAccount(hostServer, appAccount, handler);
                 }
 
             }

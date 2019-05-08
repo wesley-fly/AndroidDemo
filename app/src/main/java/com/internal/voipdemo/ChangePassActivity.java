@@ -49,17 +49,17 @@ public class ChangePassActivity extends BaseActivity {
                     return;
                 }
                 Log.e(TAG, "旧密码:" +oldPass+ ",新密码:" + NewPass1);
-                int result = VoIPMediaAPI.getInstance().changeAccountPasswordByMail(oldPass, NewPass1);
-                if(result == 0)
-                {
-                    showToastMessage("修改密码成功,请使用新密码重新登陆");
-                    VoIPMediaAPI.getInstance().logoutAccount();
-                    enterLoginActivity();
-                }
-                else
-                {
-                    showToastMessage("修改密码失败!");
-                }
+//                int result = VoIPMediaAPI.getInstance().changeAccountPasswordByMail(oldPass, NewPass1);
+//                if(result == 0)
+//                {
+//                    showToastMessage("修改密码成功,请使用新密码重新登陆");
+//                    VoIPMediaAPI.getInstance().logoutAccount();
+//                    enterLoginActivity();
+//                }
+//                else
+//                {
+//                    showToastMessage("修改密码失败!");
+//                }
             }
         });
     }

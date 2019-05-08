@@ -17,21 +17,25 @@ public abstract class VoIPMediaAPI
 
     public abstract String getSystemParams(String name);
 
-    public abstract int checkAccount(String phoneNumber);
+    public abstract String bindAccount(String appUserAccount);
 
-    public abstract int checkAccountByMail(String Email);
+    public abstract String queryIDByAccount(String appUserAccount);
 
-    public abstract int registerAccount(String phoneNumber,String countryCode,String passWord);
-
-    public abstract int registerAccountByMail(String Email, String passWord);
-
-    public abstract String loginAccount(String phoneNumber,String passWord);
-
-    public abstract String loginAccountByMail(String Email,String passWord);
-
-    public abstract int changeAccountPassword(String oldPassWord,String newPassWord);
-
-    public abstract int changeAccountPasswordByMail(String oldPassWord,String newPassWord);
+//    public abstract int checkAccount(String phoneNumber);
+//
+//    public abstract int checkAccountByMail(String Email);
+//
+//    public abstract int registerAccount(String phoneNumber,String countryCode,String passWord);
+//
+//    public abstract int registerAccountByMail(String Email, String passWord);
+//
+//    public abstract String loginAccount(String phoneNumber,String passWord);
+//
+//    public abstract String loginAccountByMail(String Email,String passWord);
+//
+//    public abstract int changeAccountPassword(String oldPassWord,String newPassWord);
+//
+//    public abstract int changeAccountPasswordByMail(String oldPassWord,String newPassWord);
 
     public abstract int logoutAccount();
 

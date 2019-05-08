@@ -51,19 +51,24 @@ public class MyApplication extends Application implements EventListener {
         }
     }
     private void tryAutoLoginAccount() {
-        final String appUserPw = SharedPerfUtils.getPassword(this);
         final String appRootCS = SharedPerfUtils.getServerHost(this);
-        final String appEmail = SharedPerfUtils.getEmail(this);
+        final String appAccount = SharedPerfUtils.getAppAccount(this);
+//        final String appUserPw = SharedPerfUtils.getPassword(this);
+//        final String appEmail = SharedPerfUtils.getEmail(this);
 
-        if (appEmail != null && appUserPw != null && appRootCS != null)
+//        if (appEmail != null && appUserPw != null && appRootCS != null)
+        Log.e(TAG, "自动登陆帐号: " + appAccount + ", appRootCS = " + appRootCS);
+        if (appAccount != null && appRootCS != null)
         {
             new Thread(new Runnable()
             {
                 @Override
                 public void run()
                 {
-                    Log.e(TAG, "自动登陆帐号: " + appEmail + ", 自动登陆密码: " + appUserPw);
-                    String AccountId = VoIPMediaAPI.getInstance().loginAccountByMail(appEmail, appUserPw);
+//                    Log.e(TAG, "自动登陆帐号: " + appEmail + ", 自动登陆密码: " + appUserPw);
+//                    String AccountId = VoIPMediaAPI.getInstance().loginAccountByMail(appEmail, appUserPw);
+                    Log.e(TAG, "自动登陆帐号: " + appAccount);
+                    String AccountId = VoIPMediaAPI.getInstance().bindAccount(appAccount);
                     if (AccountId.length() == 8)
                     {
                         Log.e(TAG, "自动登陆帐号成功,返回AccountId = " + AccountId);

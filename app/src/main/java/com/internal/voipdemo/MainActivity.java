@@ -14,7 +14,7 @@ public class MainActivity extends BaseActivity {
     private final int CALL = 0;
     private final int CHAT = 1;
     private final int PASS_CHANGE = 2;
-    private String[] items = { "呼叫", "聊天", "修改用户登录密码"};
+    private String[] items = { "呼叫", "聊天"/*, "修改用户登录密码"*/};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 showProgressDialog("正在注销，请稍后...");
-                SharedPerfUtils.clear(MainActivity.this);
+                SharedPerfUtils.clearAllPref(MainActivity.this);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {

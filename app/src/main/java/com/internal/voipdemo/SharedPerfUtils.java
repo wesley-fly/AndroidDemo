@@ -16,6 +16,15 @@ public class SharedPerfUtils
         SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
         return preferences.getString("root_host", "127.0.0.1");
     }
+    public static void setAppAccount(Context context, String appAccount) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE).edit();
+        editor.putString("app_account", appAccount).commit();
+    }
+
+    public static String getAppAccount(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return preferences.getString("app_account", null);
+    }
     public static void setPhoneNumber(Context context,String callerNumber) {
         SharedPreferences.Editor editor = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE).edit();
         editor.putString("user_phone_number", callerNumber).commit();
@@ -49,7 +58,7 @@ public class SharedPerfUtils
         return preferences.getString("account_id", null);
     }
 
-    public static void clear(Context context) {
+    public static void clearAllPref(Context context) {
         context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE).edit().clear().commit();
     }
 }

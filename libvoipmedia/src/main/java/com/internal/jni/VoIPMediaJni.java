@@ -12,21 +12,25 @@ public class VoIPMediaJni
 
     public native boolean initialize(StatusJniListener listener, Context context, int isUseJavaAuto);
 
-    public native int checkAccount(String phoneNumber);
+    public native String bindAppAccount(String appUserAccount);
 
-    public native int checkAccountByMail(String Email);
+    public native String queryIDByAccount(String appUserAccount);
 
-    public native int registerAccount(String phoneNumber, String countryCode, String userPW, String appRandomPW);
-
-    public native int registerAccountByMail(String Email, String userPW, String appRandomPW);
-
-    public native String loginAccount(String phoneNumber, String userPW);
-
-    public native String loginAccountByMail(String Email, String userPW);
-
-    public native int changeAccountPassWD(String userOldPW, String userNewPW);
-
-    public native int changeAccountPassWDByMail(String userOldPW, String userNewPW);
+//    public native int checkAccount(String phoneNumber);
+//
+//    public native int checkAccountByMail(String Email);
+//
+//    public native int registerAccount(String phoneNumber, String countryCode, String userPW, String appRandomPW);
+//
+//    public native int registerAccountByMail(String Email, String userPW, String appRandomPW);
+//
+//    public native String loginAccount(String phoneNumber, String userPW);
+//
+//    public native String loginAccountByMail(String Email, String userPW);
+//
+//    public native int changeAccountPassWD(String userOldPW, String userNewPW);
+//
+//    public native int changeAccountPassWDByMail(String userOldPW, String userNewPW);
 
     public native int logoutAppAccount();
 
