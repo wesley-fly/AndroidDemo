@@ -4,7 +4,7 @@
 - docs目录：
 1. 文档初始版本完成；
 
-###2019-05-08
+### 2019-05-08
 - 新增API:
 1. public String bindAccount(String userAccount)
 2. public String queryIDByAccount(String userAccount)
